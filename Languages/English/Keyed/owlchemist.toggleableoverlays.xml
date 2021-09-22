@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+	<Owl_HideItem>Hide item quantity and quality</Owl_HideItem>
+	<Owl_HideStorage>Hide storage building overlays (including Deep Storage)</Owl_HideStorage>
+	<Owl_HideBed>Hide bed and sleeping spot assignments</Owl_HideBed>
+	<Owl_HideThrone>Hide throne assignments</Owl_HideThrone>
+	<Owl_HidePlayerPawn>Hide player pawn names</Owl_HidePlayerPawn>
+	<Owl_HideDraftedPawn>Hide drafted pawn names</Owl_HideDraftedPawn>
+	<Owl_HidePrisonerPawn>Hide prisoner pawn names</Owl_HidePrisonerPawn>
+	<Owl_HideHostilePawn>Hide hostile pawn names</Owl_HideHostilePawn>
+	<Owl_HideOtherPawn>Hide other pawn names</Owl_HideOtherPawn>
+	<Owl_HidePower>Hide power overlays (needs power / disconnected)</Owl_HidePower>
+	<Owl_HideFuel>Hide fuel overlays (needs fuel / do not refuel)</Owl_HideFuel>
+	<Owl_HideForbidden>Hide the forbidden red X overlay for items</Owl_HideForbidden>
+	<Owl_HideForbiddenBuildings>Hide the forbidden red X overlay for buildings and blueprints</Owl_HideForbiddenBuildings>
+	<Owl_QuickShowEnabled>Allow the CTRL key to quickly show all overlays</Owl_QuickShowEnabled>
+</LanguageData>

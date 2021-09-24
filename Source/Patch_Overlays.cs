@@ -132,7 +132,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Close)) ? CheckMouseOver(t, hideForbiddenBuildings) : false;
+            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideForbiddenBuildings) : false;
         }
     }
 
@@ -142,8 +142,8 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            if (!hideForbidden) return true;
-            if (!CheckZoomFirst(CameraZoomRange.Close)) return false;
+            if (!hideForbidden && !hideForbiddenBuildings) return true;
+            if (!CheckZoomFirst(CameraZoomRange.Middle)) return false;
             
             if (t.def.category == ThingCategory.Item) return CheckMouseOver(t, hideForbidden, true);
             if (t.def.category == ThingCategory.Ethereal || t.def.category == ThingCategory.Building) return CheckMouseOver(t, hideForbiddenBuildings);

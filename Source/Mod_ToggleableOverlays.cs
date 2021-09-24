@@ -41,7 +41,7 @@ namespace ToggleableOverlays
 			options.CheckboxLabeled("Friendlies and neutrals", ref hideFriendlyPawns, "Owl_HideOtherPawn".Translate());
 			options.Gap();
 			options.GapLine();
-			options.CheckboxLabeled("Enable quick show (ctrl key)", ref quickShowEnabled, "Owl_QuickShowEnabled".Translate());
+			options.CheckboxLabeled("Enable quick show", ref quickShowEnabled, "Owl_QuickShowEnabled".Translate());
 			options.End();
 			base.DoSettingsWindowContents(inRect);
 		}
@@ -57,7 +57,6 @@ namespace ToggleableOverlays
 			GameComponent_ToggleableOverlays.drawAllPawns = !hidePlayerPawns && !hidePrisonerPawns && !hideFriendlyPawns && !hideHostilePawns;
 			base.WriteSettings();
 		}
-
 	}
 
 	public class ModSettings_ToggleableOverlays : ModSettings

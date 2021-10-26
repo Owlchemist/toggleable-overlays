@@ -61,8 +61,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing __instance)
         {
-            if (currentCameraZoom != CameraZoomRange.Closest) return false;
-            return CheckMouseOver(__instance, hideBedAssignment);
+            return CheckZoomFirst(CameraZoomRange.Closest) ? CheckMouseOver(__instance, hideBedAssignment) : false;
         }
     }
 
@@ -92,7 +91,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hidePowerWarnings) : false;
+            return CheckZoomFirst(CameraZoomRange.Middle) ? CheckMouseOver(t, hidePowerWarnings) : false;
         }
     }
 
@@ -102,7 +101,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hidePowerWarnings) : false;
+            return CheckZoomFirst(CameraZoomRange.Middle) ? CheckMouseOver(t, hidePowerWarnings) : false;
         }
     }
 
@@ -112,7 +111,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideFuelWarnings) : false;
+            return CheckZoomFirst(CameraZoomRange.Middle) ? CheckMouseOver(t, hideFuelWarnings) : false;
         }
     }
 
@@ -122,7 +121,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideFuelWarnings) : false;
+            return CheckZoomFirst(CameraZoomRange.Middle) ? CheckMouseOver(t, hideFuelWarnings) : false;
         }
     }
 
@@ -132,7 +131,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideForbiddenBuildings) : false;
+            return CheckZoomFirst(CameraZoomRange.Middle) ? CheckMouseOver(t, hideForbiddenBuildings) : false;
         }
     }
 
@@ -142,7 +141,7 @@ namespace ToggleableOverlays
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Far)) ? CheckMouseOver(t, hideBrokenDown) : false;
+            return CheckZoomFirst(CameraZoomRange.Far) ? CheckMouseOver(t, hideBrokenDown) : false;
         }
     }
 

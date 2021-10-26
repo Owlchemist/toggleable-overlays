@@ -2,12 +2,12 @@ using HarmonyLib;
 using Verse;
 using RimWorld;
 using static ToggleableOverlays.ModSettings_ToggleableOverlays;
-using static ToggleableOverlays.GameComponent_ToggleableOverlays;
+using static ToggleableOverlays.ToggleableOverlaysUtility;
  
 namespace ToggleableOverlays
 {
     //Pawn names
-    [HarmonyPatch (typeof(Pawn), "DrawGUIOverlay")]
+    [HarmonyPatch (typeof(Pawn), nameof(Pawn.DrawGUIOverlay))]
     static class Patch_Pawn_DrawGUIOverlay
     {
         static bool Prefix(Pawn __instance)
@@ -56,7 +56,7 @@ namespace ToggleableOverlays
     }
 
     //Bed assignments
-    [HarmonyPatch (typeof(Building_Bed), "DrawGUIOverlay")]
+    [HarmonyPatch (typeof(Building_Bed), nameof(Building_Bed.DrawGUIOverlay))]
     static class Patch_Building_Bed_DrawGUIOverlay
     {
         static bool Prefix(Thing __instance)
@@ -67,8 +67,8 @@ namespace ToggleableOverlays
     }
 
     //Item qualities and quanities, bed and throne assignments, storage buildings
-    [HarmonyPatch (typeof(ThingWithComps), "DrawGUIOverlay")]
-    static class Patch_ThingWithComps
+    [HarmonyPatch (typeof(ThingWithComps), nameof(ThingWithComps.DrawGUIOverlay))]
+    static class Patch_ThingWithComps_DrawGUIOverlay
     {
         static bool Prefix(Thing __instance)
         {
@@ -87,47 +87,47 @@ namespace ToggleableOverlays
     }
 
     //Power overlay: building lacks power
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderNeedsPowerOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderNeedsPowerOverlay))]
     static class Patch_OverlayDrawer_RenderNeedsPowerOverlay
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Close)) ? CheckMouseOver(t, hidePowerWarnings) : false;
+            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hidePowerWarnings) : false;
         }
     }
 
     //Power overlay: building disconnected
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderPowerOffOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderPowerOffOverlay))]
     static class Patch_OverlayDrawer_RenderPowerOffOverlay
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Close)) ? CheckMouseOver(t, hidePowerWarnings) : false;
+            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hidePowerWarnings) : false;
         }
     }
 
     //Fuel overlay: Building lacks fuel
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderOutOfFuelOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderOutOfFuelOverlay))]
     static class Patch_OverlayDrawer_RenderOutOfFuelOverlay
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Close)) ? CheckMouseOver(t, hideFuelWarnings) : false;
+            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideFuelWarnings) : false;
         }
     }
 
     //Fuel overlay: do not refuel
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderForbiddenRefuelOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderForbiddenRefuelOverlay))]
     static class Patch_OverlayDrawer_RenderForbiddenRefuelOverlay
     {
         static bool Prefix(Thing t)
         {
-            return (CheckZoomFirst(CameraZoomRange.Close)) ? CheckMouseOver(t, hideFuelWarnings) : false;
+            return (CheckZoomFirst(CameraZoomRange.Middle)) ? CheckMouseOver(t, hideFuelWarnings) : false;
         }
     }
 
     //Forbidden overlay (the red X)
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderForbiddenBigOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderForbiddenBigOverlay))]
     static class Patch_OverlayDrawer_RenderForbiddenBigOverlay
     {
         static bool Prefix(Thing t)
@@ -136,8 +136,18 @@ namespace ToggleableOverlays
         }
     }
 
+    //Broken down overlay
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderBrokenDownOverlay))]
+    static class Patch_OverlayDrawer_RenderBrokenDownOverlay
+    {
+        static bool Prefix(Thing t)
+        {
+            return (CheckZoomFirst(CameraZoomRange.Far)) ? CheckMouseOver(t, hideBrokenDown) : false;
+        }
+    }
+
      //Forbidden overlay (the red X)
-    [HarmonyPatch (typeof(OverlayDrawer), "RenderForbiddenOverlay")]
+    [HarmonyPatch (typeof(OverlayDrawer), nameof(OverlayDrawer.RenderForbiddenOverlay))]
     static class Patch_OverlayDrawer_RenderForbiddenOverlay
     {
         static bool Prefix(Thing t)

@@ -2,47 +2,67 @@ using Verse;
 using HarmonyLib;
 using UnityEngine;
 using static ToggleableOverlays.ModSettings_ToggleableOverlays;
+using System;
+using System.Linq;
  
 namespace ToggleableOverlays
 {
-    public class Mod_HiddenOverlays : Mod
+    public class Mod_ToggleableOverlays : Mod
 	{
-		public Mod_HiddenOverlays(ModContentPack content) : base(content)
+		public Mod_ToggleableOverlays(ModContentPack content) : base(content)
 		{
 			new Harmony(this.Content.PackageIdPlayerFacing).PatchAll();
 			base.GetSettings<ModSettings_ToggleableOverlays>();
+			LongEventHandler.QueueLongEvent(() => LoadedModManager.GetMod<Mod_ToggleableOverlays>().WriteSettings(), "Mod_HiddenOverlays.WriteSettings", false, null);
 		}
 
 		public override void DoSettingsWindowContents(Rect inRect)
 		{
+			inRect.yMin += 20f;
+			inRect.yMax -= 20f;
 			Listing_Standard options = new Listing_Standard();
-			options.Begin(inRect);
+			Rect outRect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
+			Rect rect = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 1.2f);
+			Widgets.BeginScrollView(outRect, ref scrollPos, rect, true);
+
+			//Listing_Standard options = new Listing_Standard();
+			options.Begin(rect);
 			options.Gap();
-			options.Label("Hide text overlays:");
-			options.GapLine();
-			options.CheckboxLabeled("Items", ref hideItems, "Owl_HideItem".Translate());
-			options.CheckboxLabeled("Storage buildings", ref hideStorageBuilding, "Owl_HideStorage".Translate());
-			options.CheckboxLabeled("Bed assignment", ref hideBedAssignment, "Owl_HideBed".Translate());
-			options.CheckboxLabeled("Throne assignment (Royalty)", ref hideThroneAssignment, "Owl_HideThrone".Translate());
+			options.Label("ToggleableOverlays.Header.TextOverlays".Translate());
+			options.GapLine(); //======================================
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideItem".Translate(), ref hideItems, "ToggleableOverlays.Settings.HideItem.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideStorage".Translate(), ref hideStorageBuilding, "ToggleableOverlays.Settings.HideStorage.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideBed".Translate(), ref hideBedAssignment, "ToggleableOverlays.Settings.HideBed.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideThrone".Translate(), ref hideThroneAssignment, "ToggleableOverlays.Settings.HideThrone.Desc".Translate());
+			
 			options.Gap();
-			options.Label("Hide icon overlays:");
-			options.GapLine();
-			options.CheckboxLabeled("Power", ref hidePowerWarnings, "Owl_HidePower".Translate());
-			options.CheckboxLabeled("Fuel", ref hideFuelWarnings, "Owl_HideFuel".Translate());
-			options.CheckboxLabeled("Forbidden items", ref hideForbidden, "Owl_HideForbidden".Translate());
-			options.CheckboxLabeled("Forbidden buildings and blueprints", ref hideForbiddenBuildings, "Owl_HideForbiddenBuildings".Translate());
+			options.Label("ToggleableOverlays.Header.IconOverlays".Translate());
+			options.GapLine(); //======================================
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HidePower".Translate(), ref hidePowerWarnings, "ToggleableOverlays.Settings.HidePower.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideFuel".Translate(), ref hideFuelWarnings, "ToggleableOverlays.Settings.HideFuel.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideBrokenDown".Translate(), ref hideBrokenDown, "ToggleableOverlays.Settings.HideBrokenDown.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideForbidden".Translate(), ref hideForbidden, "ToggleableOverlays.Settings.HideForbidden.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideForbiddenBuildings".Translate(), ref hideForbiddenBuildings, "ToggleableOverlays.Settings.HideForbiddenBuildings.Desc".Translate());
+			
 			options.Gap();
-			options.Label("Hide pawn names:");
-			options.GapLine();
-			options.CheckboxLabeled("Player pawns", ref hidePlayerPawns, "Owl_HidePlayerPawn".Translate());
-			if (hidePlayerPawns) options.CheckboxLabeled("Drafted pawns", ref hideDraftedPawns, "Owl_HideDraftedPawn".Translate());
-			options.CheckboxLabeled("Prisoners and slaves", ref hidePrisonerPawns, "Owl_HidePrisonerPawn".Translate());
-			options.CheckboxLabeled("Hostiles", ref hideHostilePawns, "Owl_HideHostilePawn".Translate());
-			options.CheckboxLabeled("Friendlies and neutrals", ref hideFriendlyPawns, "Owl_HideOtherPawn".Translate());
+			options.Label("ToggleableOverlays.Header.PawnOverlays".Translate());
+			options.GapLine(); //======================================
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HidePlayerPawn".Translate(), ref hidePlayerPawns, "ToggleableOverlays.Settings.HidePlayerPawn.Desc".Translate());
+			if (hidePlayerPawns) options.CheckboxLabeled("ToggleableOverlays.Settings.HideDraftedPawn".Translate(), ref hideDraftedPawns, "ToggleableOverlays.Settings.HideDraftedPawn.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HidePrisonerPawn".Translate(), ref hidePrisonerPawns, "ToggleableOverlays.Settings.HidePrisonerPawn.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideHostilePawn".Translate(), ref hideHostilePawns, "ToggleableOverlays.Settings.HideHostilePawn.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.HideOtherPawn".Translate(), ref hideFriendlyPawns, "ToggleableOverlays.Settings.HideOtherPawn.Desc".Translate());
+			
 			options.Gap();
-			options.GapLine();
-			options.CheckboxLabeled("Enable quick show", ref quickShowEnabled, "Owl_QuickShowEnabled".Translate());
+			options.Label("ToggleableOverlays.Header.MiscOverlays".Translate());
+			options.GapLine(); //======================================
+			options.Label("ToggleableOverlays.Settings.BlueprintTransparency".Translate("1", "0", "1") + Math.Round(blueprintTransparency, 2) + "ToggleableOverlays.Settings.BlueprintTransparencyReload".Translate(), -1f, "ToggleableOverlays.Settings.BlueprintTransparency.Desc".Translate());
+			blueprintTransparency = options.Slider(blueprintTransparency, 0f, 1f);
+			
+			options.Gap();
+			options.CheckboxLabeled("ToggleableOverlays.Settings.QuickShowEnabled".Translate(), ref quickShowEnabled, "ToggleableOverlays.Settings.QuickShowEnabled.Desc".Translate());
 			options.End();
+			Widgets.EndScrollView();
 			base.DoSettingsWindowContents(inRect);
 		}
 
@@ -53,14 +73,21 @@ namespace ToggleableOverlays
 
 		public override void WriteSettings()
 		{
+			//Pawn rule sanity
 			if (!hidePlayerPawns) hideDraftedPawns = false;
-			GameComponent_ToggleableOverlays.drawAllPawns = !hidePlayerPawns && !hidePrisonerPawns && !hideFriendlyPawns && !hideHostilePawns;
+
+			//Set skip-all bool if relevant
+			ToggleableOverlaysUtility.drawAllPawns = !hidePlayerPawns && !hidePrisonerPawns && !hideFriendlyPawns && !hideHostilePawns;
+
+			//Apply blueprint transparency
+			DefDatabase<ThingDef>.AllDefs.Where(x => x.IsBlueprint && !x.IsFrame).ToList().ForEach(y => y.graphic.color.a = blueprintTransparency);
+
 			base.WriteSettings();
 		}
 	}
 
 	public class ModSettings_ToggleableOverlays : ModSettings
-		{
+	{
 		public override void ExposeData()
 		{
 			Scribe_Values.Look<bool>(ref hideItems, "hideItems", true, false);
@@ -76,10 +103,13 @@ namespace ToggleableOverlays
 
 			Scribe_Values.Look<bool>(ref hidePowerWarnings, "hidePowerWarnings", false, false);
 			Scribe_Values.Look<bool>(ref hideFuelWarnings, "hideFuelWarnings", true, false);
+			Scribe_Values.Look<bool>(ref hideBrokenDown, "hideBrokenDown", false, false);
 			Scribe_Values.Look<bool>(ref hideForbidden, "hideForbidden", false, false);
 			Scribe_Values.Look<bool>(ref hideForbiddenBuildings, "hideForbiddenBuildings", false, false);
 
 			Scribe_Values.Look<bool>(ref quickShowEnabled, "quickShowEnabled", true, false);
+			Scribe_Values.Look<float>(ref blueprintTransparency, "blueprintTransparency", 1f, false);
+
 			base.ExposeData();
 		}
 
@@ -96,6 +126,9 @@ namespace ToggleableOverlays
 		public static bool hideFuelWarnings = true;
 		public static bool hideForbidden = false;
 		public static bool hideForbiddenBuildings = false;
+		public static bool hideBrokenDown = false;
 		public static bool quickShowEnabled = true;
+		public static float blueprintTransparency = 1f;
+		public static Vector2 scrollPos = Vector2.zero;
 	}
 }

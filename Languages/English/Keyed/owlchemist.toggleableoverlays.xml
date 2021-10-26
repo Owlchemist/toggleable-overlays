@@ -13,5 +13,5 @@
 	<Owl_HideFuel>Hide fuel overlays (needs fuel / do not refuel)</Owl_HideFuel>
 	<Owl_HideForbidden>Hide the forbidden red X overlay for items</Owl_HideForbidden>
 	<Owl_HideForbiddenBuildings>Hide the forbidden red X overlay for buildings and blueprints</Owl_HideForbiddenBuildings>
-	<Owl_QuickShowEnabled>Allow the CTRL key to quickly show all overlays</Owl_QuickShowEnabled>
+	<Owl_QuickShowEnabled>Allow the hotkey (CTRL by default) to show all overlays. Use the regular keybinding interface in the options to change this key.</Owl_QuickShowEnabled>
 </LanguageData>

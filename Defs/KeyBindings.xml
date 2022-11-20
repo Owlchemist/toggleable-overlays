@@ -8,7 +8,7 @@
 	
 	<KeyBindingDef>
 		<defName>QuickShowKey</defName>
-		<label>Toogle Overlays</label>
+		<label>Toggle Overlays</label>
 		<category>ToggleableOverlays</category>
 		<defaultKeyCodeA>LeftControl</defaultKeyCodeA>
 	</KeyBindingDef>

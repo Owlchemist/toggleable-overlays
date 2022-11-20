@@ -13,7 +13,7 @@ namespace ToggleableOverlays
 		{
 			new Harmony(this.Content.PackageIdPlayerFacing).PatchAll();
 			base.GetSettings<ModSettings_ToggleableOverlays>();
-			LongEventHandler.QueueLongEvent(() => LoadedModManager.GetMod<Mod_ToggleableOverlays>().WriteSettings(), "Mod_HiddenOverlays.WriteSettings", false, null);
+			LongEventHandler.QueueLongEvent(() => this.WriteSettings(), null, false, null);
 		}
 
 		public override void DoSettingsWindowContents(Rect inRect)
@@ -25,7 +25,6 @@ namespace ToggleableOverlays
 			Rect rect = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 1.2f);
 			Widgets.BeginScrollView(outRect, ref scrollPos, rect, true);
 
-			//Listing_Standard options = new Listing_Standard();
 			options.Begin(rect);
 			options.Gap();
 			options.Label("ToggleableOverlays.Header.TextOverlays".Translate());
@@ -61,6 +60,7 @@ namespace ToggleableOverlays
 			
 			options.Gap();
 			options.CheckboxLabeled("ToggleableOverlays.Settings.QuickShowEnabled".Translate(), ref quickShowEnabled, "ToggleableOverlays.Settings.QuickShowEnabled.Desc".Translate());
+			if (quickShowEnabled) options.CheckboxLabeled("ToggleableOverlays.Settings.QuickShowAltMode".Translate(), ref quickShowAltMode, "ToggleableOverlays.Settings.QuickShowAltMode.Desc".Translate());
 			options.End();
 			Widgets.EndScrollView();
 			base.DoSettingsWindowContents(inRect);
@@ -80,7 +80,10 @@ namespace ToggleableOverlays
 			ToggleableOverlaysUtility.drawAllPawns = !hidePlayerPawns && !hidePrisonerPawns && !hideFriendlyPawns && !hideHostilePawns;
 
 			//Apply blueprint transparency
-			DefDatabase<ThingDef>.AllDefs.Where(x => x.IsBlueprint && !x.IsFrame).ToList().ForEach(y => y.graphic.color.a = blueprintTransparency);
+			DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.IsBlueprint && !x.IsFrame).ToList().ForEach(y => y.graphic.color.a = blueprintTransparency);
+
+			//Check if a stackable chunks mod is loaded
+			stackableChunks = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.thingCategories?.Contains(ResourceBank.ThingCategoryDefOf.Chunks) ?? false).Any(y => y.drawGUIOverlayQuality == true);
 
 			base.WriteSettings();
 		}
@@ -108,6 +111,7 @@ namespace ToggleableOverlays
 			Scribe_Values.Look<bool>(ref hideForbiddenBuildings, "hideForbiddenBuildings", false, false);
 
 			Scribe_Values.Look<bool>(ref quickShowEnabled, "quickShowEnabled", true, false);
+			Scribe_Values.Look<bool>(ref quickShowAltMode, "quickShowAltMode", true, false);
 			Scribe_Values.Look<float>(ref blueprintTransparency, "blueprintTransparency", 1f, false);
 
 			base.ExposeData();
@@ -117,18 +121,20 @@ namespace ToggleableOverlays
 		public static bool hideBedAssignment = true;
 		public static bool hideThroneAssignment = true;
 		public static bool hideStorageBuilding = true;
-		public static bool hidePlayerPawns = false;
-		public static bool hideDraftedPawns = false;
-		public static bool hidePrisonerPawns = false;
-		public static bool hideFriendlyPawns = false;
-		public static bool hideHostilePawns = false;
-		public static bool hidePowerWarnings = false;
+		public static bool hidePlayerPawns;
+		public static bool hideDraftedPawns;
+		public static bool hidePrisonerPawns;
+		public static bool hideFriendlyPawns;
+		public static bool hideHostilePawns;
+		public static bool hidePowerWarnings;
 		public static bool hideFuelWarnings = true;
-		public static bool hideForbidden = false;
-		public static bool hideForbiddenBuildings = false;
+		public static bool hideForbidden;
+		public static bool hideForbiddenBuildings;
 		public static bool hideBrokenDown = false;
 		public static bool quickShowEnabled = true;
+		public static bool quickShowAltMode;
 		public static float blueprintTransparency = 1f;
 		public static Vector2 scrollPos = Vector2.zero;
+		public static bool stackableChunks;
 	}
 }

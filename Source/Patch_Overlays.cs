@@ -20,25 +20,19 @@ namespace ToggleableOverlays
                 //Factionless pawns. May happen if debug spawned or some events.
                 if (faction == null)
                 {
-                    if (!hideFriendlyPawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z) return true;
-                    return false;
+                    return !hideFriendlyPawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z;
                 }
                 if (faction.IsPlayer)
                 {
-                    if (!hidePlayerPawns) return true;
-                    if (!hideDraftedPawns && __instance.Drafted) return true;
-                    if (__instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z) return true;
-                    return false;
+                    return (!hidePlayerPawns || (!hideDraftedPawns && __instance.Drafted) || (__instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z));
                 }
                 if (__instance.IsPrisoner || __instance.IsSlave)
                 {
-                    if (!hidePrisonerPawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z) return true;
-                    return false;
+                    return !hidePrisonerPawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z;
                 }
                 if (faction.HostileTo(Faction.OfPlayer))
                 {
-                    if (!hideHostilePawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z) return true;
-                    return false;
+                    return !hideHostilePawns || __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z;
                 }
                 //Assume neutral/friendly
                 if (faction != null)
@@ -46,9 +40,7 @@ namespace ToggleableOverlays
                     if (!hideFriendlyPawns) return true;
                     //Make exception for trader pawns
                     if (__instance.CanTradeNow) __instance.Map.overlayDrawer.DrawOverlay(__instance, OverlayTypes.QuestionMark);
-                    if (__instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z) return true;
-
-                    return false;
+                    return __instance.Position.x == mousePosition.x && __instance.Position.z == mousePosition.z;
                 }
             }
             return true;  
@@ -65,6 +57,17 @@ namespace ToggleableOverlays
         }
     }
 
+    //Item stackable chunks, if relevant
+    [HarmonyPatch (typeof(Thing), nameof(Thing.DrawGUIOverlay))]
+    static class Patch_Thing_DrawGUIOverlay
+    {
+        static bool Prefix(Thing __instance)
+        {
+            if (stackableChunks && __instance.def.category == ThingCategory.Item) return CheckZoomFirst(CameraZoomRange.Closest) ? CheckMouseOver(__instance, hideItems) : false;
+            return true;
+        }
+    }
+
     //Item qualities and quanities, bed and throne assignments, storage buildings
     [HarmonyPatch (typeof(ThingWithComps), nameof(ThingWithComps.DrawGUIOverlay))]
     static class Patch_ThingWithComps_DrawGUIOverlay
@@ -76,7 +79,7 @@ namespace ToggleableOverlays
             if (__instance.def.category == ThingCategory.Item) return CheckMouseOver(__instance, hideItems, true);
             else if (__instance.def.category == ThingCategory.Building)
             {
-                var type = __instance.GetType();
+                System.Type type = __instance.GetType();
                 
                 if (type == typeof(Building_Storage) || type == typeof(Building)) return CheckMouseOver(__instance, hideStorageBuilding);
                 if (type == typeof(Building_Throne)) return CheckMouseOver(__instance, hideThroneAssignment);

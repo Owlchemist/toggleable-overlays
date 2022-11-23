@@ -22,7 +22,7 @@ namespace ToggleableOverlays
 			inRect.yMax -= 20f;
 			Listing_Standard options = new Listing_Standard();
 			Rect outRect = new Rect(inRect.x, inRect.y, inRect.width, inRect.height);
-			Rect rect = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 1.2f);
+			Rect rect = new Rect(0f, 0f, inRect.width - 30f, inRect.height * 1.4f);
 			Widgets.BeginScrollView(outRect, ref scrollPos, rect, true);
 
 			options.Begin(rect);
@@ -32,7 +32,7 @@ namespace ToggleableOverlays
 			options.CheckboxLabeled("ToggleableOverlays.Settings.HideItem".Translate(), ref hideItems, "ToggleableOverlays.Settings.HideItem.Desc".Translate());
 			options.CheckboxLabeled("ToggleableOverlays.Settings.HideStorage".Translate(), ref hideStorageBuilding, "ToggleableOverlays.Settings.HideStorage.Desc".Translate());
 			options.CheckboxLabeled("ToggleableOverlays.Settings.HideBed".Translate(), ref hideBedAssignment, "ToggleableOverlays.Settings.HideBed.Desc".Translate());
-			options.CheckboxLabeled("ToggleableOverlays.Settings.HideThrone".Translate(), ref hideThroneAssignment, "ToggleableOverlays.Settings.HideThrone.Desc".Translate());
+			if (ModLister.RoyaltyInstalled) options.CheckboxLabeled("ToggleableOverlays.Settings.HideThrone".Translate(), ref hideThroneAssignment, "ToggleableOverlays.Settings.HideThrone.Desc".Translate());
 			
 			options.Gap();
 			options.Label("ToggleableOverlays.Header.IconOverlays".Translate());
@@ -61,6 +61,8 @@ namespace ToggleableOverlays
 			options.Gap();
 			options.CheckboxLabeled("ToggleableOverlays.Settings.QuickShowEnabled".Translate(), ref quickShowEnabled, "ToggleableOverlays.Settings.QuickShowEnabled.Desc".Translate());
 			if (quickShowEnabled) options.CheckboxLabeled("ToggleableOverlays.Settings.QuickShowAltMode".Translate(), ref quickShowAltMode, "ToggleableOverlays.Settings.QuickShowAltMode.Desc".Translate());
+			options.CheckboxLabeled("ToggleableOverlays.Settings.UseOptimizedLister".Translate(), ref optimizedLister, "ToggleableOverlays.Settings.UseOptimizedLister.Desc".Translate());
+			if (optimizedLister) options.CheckboxLabeled("ToggleableOverlays.Settings.UseZoomFilter".Translate(), ref zoomFilter, "ToggleableOverlays.Settings.UseZoomFilter.Desc".Translate());
 			options.End();
 			Widgets.EndScrollView();
 			base.DoSettingsWindowContents(inRect);
@@ -81,10 +83,6 @@ namespace ToggleableOverlays
 
 			//Apply blueprint transparency
 			DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.IsBlueprint && !x.IsFrame).ToList().ForEach(y => y.graphic.color.a = blueprintTransparency);
-
-			//Check if a stackable chunks mod is loaded
-			stackableChunks = DefDatabase<ThingDef>.AllDefsListForReading.Where(x => x.thingCategories?.Contains(ResourceBank.ThingCategoryDefOf.Chunks) ?? false).Any(y => y.drawGUIOverlayQuality == true);
-
 			base.WriteSettings();
 		}
 	}
@@ -113,28 +111,16 @@ namespace ToggleableOverlays
 			Scribe_Values.Look<bool>(ref quickShowEnabled, "quickShowEnabled", true, false);
 			Scribe_Values.Look<bool>(ref quickShowAltMode, "quickShowAltMode", true, false);
 			Scribe_Values.Look<float>(ref blueprintTransparency, "blueprintTransparency", 1f, false);
+			Scribe_Values.Look<bool>(ref optimizedLister, "useOptimizedLister", true, false);
+			Scribe_Values.Look<bool>(ref zoomFilter, "zoomFilter", true, false);
 
 			base.ExposeData();
 		}
 
-		public static bool hideItems = true;
-		public static bool hideBedAssignment = true;
-		public static bool hideThroneAssignment = true;
-		public static bool hideStorageBuilding = true;
-		public static bool hidePlayerPawns;
-		public static bool hideDraftedPawns;
-		public static bool hidePrisonerPawns;
-		public static bool hideFriendlyPawns;
-		public static bool hideHostilePawns;
-		public static bool hidePowerWarnings;
-		public static bool hideFuelWarnings = true;
-		public static bool hideForbidden;
-		public static bool hideForbiddenBuildings;
-		public static bool hideBrokenDown = false;
-		public static bool quickShowEnabled = true;
-		public static bool quickShowAltMode;
+		public static bool hidePlayerPawns, hideDraftedPawns, hidePrisonerPawns, hideFriendlyPawns, hideHostilePawns, hidePowerWarnings, 
+		hideForbidden, hideForbiddenBuildings, hideBrokenDown, quickShowAltMode, hideItems = true, hideBedAssignment = true, hideThroneAssignment = true, 
+		hideStorageBuilding = true, hideFuelWarnings = true, quickShowEnabled = true, optimizedLister = true, zoomFilter = true;
 		public static float blueprintTransparency = 1f;
 		public static Vector2 scrollPos = Vector2.zero;
-		public static bool stackableChunks;
 	}
 }

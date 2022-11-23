@@ -7,6 +7,8 @@ namespace ToggleableOverlays
     internal static class ToggleableOverlaysUtility
 	{
 		public static IntVec3 mousePosition = new IntVec3(0,0,0); //Instead of every entity calling this, we centralize the call just once per frame
+		public static int mousePositionX = 0; //One less opt to avoid digging through the vector struct
+		public static int mousePositionZ = 0; //One less opt to avoid digging through the vector struct
 		public static CameraZoomRange currentCameraZoom = CameraZoomRange.Close; //Same thing here...
 		public static bool quickView; //Ctrl key is pressed?
 		public static bool drawAllPawns; //Performance bool, skip method is irrelevant
@@ -15,7 +17,7 @@ namespace ToggleableOverlays
 		{
 			if (!flag || quickView) return true;
 			
-			if (sizeOne || thing.def.size.x == 1 && thing.def.size.z == 1) return thing.positionInt.x == mousePosition.x && thing.positionInt.z == mousePosition.z;
+			if (sizeOne || thing.def.size.x == 1 && thing.def.size.z == 1) return thing.positionInt.x == mousePositionX && thing.positionInt.z == mousePositionZ;
 			
 			return GenAdj.IsInside(mousePosition, thing.positionInt, thing.rotationInt, thing.def.size);
 		}

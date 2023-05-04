@@ -10,5 +10,14 @@ namespace ToggleableOverlays
         {
             public static ThingCategoryDef Chunks;
         }
+        [DefOf]
+        public static class KeyBindingDefOf
+        {
+            static KeyBindingDefOf()
+            {
+                DefOfHelper.EnsureInitializedInCtor(typeof(KeyBindingDefOf));
+            }
+            public static KeyBindingDef QuickShowKey;
+        }
     }
 }

@@ -7,8 +7,8 @@ using static ToggleableOverlays.ModSettings_ToggleableOverlays;
 namespace ToggleableOverlays
 {
     //This patch is responsible for caching the mouse position, camera zoom, and hotkey handler
-    [HarmonyPatch (typeof(GameComponentUtility), nameof(GameComponentUtility.GameComponentUpdate))]
-    static class Patch_GameComponentUpdate
+    [HarmonyPatch (typeof(Game), nameof(Game.UpdatePlay))]
+    static class Patch_Game_UpdatePlay
     {
         static void Postfix()
         {
@@ -23,9 +23,9 @@ namespace ToggleableOverlays
                 currentCameraZoom = Current.cameraDriverInt.CurrentZoom;
                 if (quickShowAltMode)
                 {
-                    if (Hotkeys.QuickShowKey.JustPressed) quickView ^= true;
+                    if (ResourceBank.KeyBindingDefOf.QuickShowKey.JustPressed) quickView ^= true;
                 }
-                else quickView = Hotkeys.QuickShowKey.IsDown && ModSettings_ToggleableOverlays.quickShowEnabled;
+                else quickView = ResourceBank.KeyBindingDefOf.QuickShowKey.IsDown && ModSettings_ToggleableOverlays.quickShowEnabled;
             }
         }
     }

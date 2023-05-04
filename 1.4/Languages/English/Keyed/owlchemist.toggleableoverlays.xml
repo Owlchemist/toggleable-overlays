@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<ToggleableOverlays.Header.TextOverlays>Hide text overlays:</ToggleableOverlays.Header.TextOverlays>
-	<ToggleableOverlays.Header.IconOverlays>Hide icon overlays:</ToggleableOverlays.Header.IconOverlays>
-	<ToggleableOverlays.Header.PawnOverlays>Hide pawn names:</ToggleableOverlays.Header.PawnOverlays>
-	<ToggleableOverlays.Header.MiscOverlays>Misc:</ToggleableOverlays.Header.MiscOverlays>
+	<ToggleableOverlays.Header.TextOverlays>Text overlays</ToggleableOverlays.Header.TextOverlays>
+	<ToggleableOverlays.Header.IconOverlays>Icon overlays</ToggleableOverlays.Header.IconOverlays>
+	<ToggleableOverlays.Header.Misc>Misc</ToggleableOverlays.Header.Misc>
 	
 	<ToggleableOverlays.Settings.HideItem>Items</ToggleableOverlays.Settings.HideItem>
 	<ToggleableOverlays.Settings.HideStorage>Storage buildings</ToggleableOverlays.Settings.HideStorage>
@@ -11,7 +10,8 @@
 	<ToggleableOverlays.Settings.HideThrone>Throne assignment</ToggleableOverlays.Settings.HideThrone>
 	<ToggleableOverlays.Settings.HidePlayerPawn>Player pawns</ToggleableOverlays.Settings.HidePlayerPawn>
 	<ToggleableOverlays.Settings.HideDraftedPawn>Drafted pawns</ToggleableOverlays.Settings.HideDraftedPawn>
-	<ToggleableOverlays.Settings.HidePrisonerPawn>Prisoners and slaves</ToggleableOverlays.Settings.HidePrisonerPawn>
+	<ToggleableOverlays.Settings.HidePrisonerPawn>Prisoners</ToggleableOverlays.Settings.HidePrisonerPawn>
+	<ToggleableOverlays.Settings.HideSlavePawn>Slaves</ToggleableOverlays.Settings.HideSlavePawn>
 	<ToggleableOverlays.Settings.HideHostilePawn>Hostiles</ToggleableOverlays.Settings.HideHostilePawn>
 	<ToggleableOverlays.Settings.HideOtherPawn>Friendlies and neutrals</ToggleableOverlays.Settings.HideOtherPawn>
 	<ToggleableOverlays.Settings.HidePower>Power</ToggleableOverlays.Settings.HidePower>
@@ -21,8 +21,7 @@
 	<ToggleableOverlays.Settings.HideForbiddenBuildings>Forbidden buildings and blueprints</ToggleableOverlays.Settings.HideForbiddenBuildings>
 	<ToggleableOverlays.Settings.QuickShowEnabled>Enable quick show</ToggleableOverlays.Settings.QuickShowEnabled>
 	<ToggleableOverlays.Settings.QuickShowAltMode>Enable quick show toggle mode</ToggleableOverlays.Settings.QuickShowAltMode>
-	<ToggleableOverlays.Settings.BlueprintTransparency>Blueprint transparency (Mod default: {0}, Min: {1}, Max: {2}): </ToggleableOverlays.Settings.BlueprintTransparency>
-	<ToggleableOverlays.Settings.BlueprintTransparencyReload> (requires save reload)</ToggleableOverlays.Settings.BlueprintTransparencyReload>
+	<ToggleableOverlays.Settings.BlueprintTransparency>Blueprint transparency: {3} (requires save reload)</ToggleableOverlays.Settings.BlueprintTransparency>
 	<ToggleableOverlays.Settings.UseOptimizedLister>Use optimized lister</ToggleableOverlays.Settings.UseOptimizedLister>
 	<ToggleableOverlays.Settings.UseZoomFilter>Use zoom filter</ToggleableOverlays.Settings.UseZoomFilter>
 	<ToggleableOverlays.Settings.HideMoteProgress>Hide toil gauge</ToggleableOverlays.Settings.HideMoteProgress>
@@ -37,6 +36,7 @@
 	<ToggleableOverlays.Settings.HidePlayerPawn.Desc>Hide player pawn names</ToggleableOverlays.Settings.HidePlayerPawn.Desc>
 	<ToggleableOverlays.Settings.HideDraftedPawn.Desc>Hide drafted pawn names</ToggleableOverlays.Settings.HideDraftedPawn.Desc>
 	<ToggleableOverlays.Settings.HidePrisonerPawn.Desc>Hide prisoner pawn names</ToggleableOverlays.Settings.HidePrisonerPawn.Desc>
+	<ToggleableOverlays.Settings.HideSlavePawn.Desc>Hide slave pawn names</ToggleableOverlays.Settings.HideSlavePawn.Desc>
 	<ToggleableOverlays.Settings.HideHostilePawn.Desc>Hide hostile pawn names</ToggleableOverlays.Settings.HideHostilePawn.Desc>
 	<ToggleableOverlays.Settings.HideOtherPawn.Desc>Hide other pawn names</ToggleableOverlays.Settings.HideOtherPawn.Desc>
 	<ToggleableOverlays.Settings.HidePower.Desc>Hide power overlays (needs power / disconnected)</ToggleableOverlays.Settings.HidePower.Desc>

@@ -37,10 +37,4 @@ namespace ToggleableOverlays
 			return currentCameraZoom <= minimumCameraRange;
 		}
 	}
-
-	[DefOf]
-	public static class Hotkeys
-	{
-		public static KeyBindingDef QuickShowKey;
-	}
 }

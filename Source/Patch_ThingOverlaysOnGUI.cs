@@ -1,51 +1,103 @@
 using HarmonyLib;
+using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using Verse;
 using static ToggleableOverlays.ModSettings_ToggleableOverlays;
 using static ToggleableOverlays.ToggleableOverlaysUtility;
-using System;
-using System.Collections.Generic;
-using UnityEngine;
  
 namespace ToggleableOverlays
 {
     //Optimized lister
     [HarmonyPatch (typeof(ThingOverlays), nameof(ThingOverlays.ThingOverlaysOnGUI))]
-    static class Replace_ThingOverlaysOnGUI
+    static class Patch_ThingOverlays_ThingOverlaysOnGUI
     {
         static bool Prepare()
         {
             return optimizedLister;
         }
-        static bool Prefix(Thing __instance)
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
         {
-            if (Event.current.type != EventType.Repaint) return false;
-
-            Map map = Find.CurrentMap;
-            List<Thing> listsByGroup = map.listerThings.listsByGroup[!zoomFilter || currentCameraZoom == CameraZoomRange.Closest ? 31 : 12]; //ThingRequestGroup.HasGUIOverlay is 31, Pawn is 12
+            var workingList = new List<CodeInstruction>();
+            bool found1 = false, found2 = false;
+            int counter = 0;
+            var method1 = AccessTools.PropertyGetter(typeof(Find), nameof(Find.CurrentMap));
+            var method2 = AccessTools.PropertyGetter(typeof(List<Thing>), nameof(List<Thing>.Count));
             
-            int length = listsByGroup.Count;
-            for (int i = 0; i < length; ++i)
+            LocalBuilder map = generator.DeclareLocal(typeof(Map));
+            LocalBuilder length = generator.DeclareLocal(typeof(int));
+
+            var code = new CodeInstruction(OpCodes.Call, AccessTools.PropertyGetter(typeof(Find), nameof(Find.CurrentMap)));
+            var label = generator.DefineLabel();
+            code.labels.Add(label);
+            
+            foreach (var instruction in instructions)
             {
-                Thing thing = listsByGroup[i];
-                if (CameraDriver.lastViewRect.Contains(thing.positionInt) && !map.fogGrid.fogGrid[thing.positionInt.z * map.info.sizeInt.x + thing.positionInt.x])
+                //Add a local variable for CurrentMap
+                if (!found2 && instruction.opcode == OpCodes.Beq_S)
                 {
-                    try
-                    {
-                        thing.DrawGUIOverlay();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.Error(string.Concat(new object[]
-                        {
-                            "Exception drawing ThingOverlay for ",
-                            thing,
-                            ": ",
-                            ex
-                        }));
-                    }
+                    workingList.Add(new CodeInstruction(OpCodes.Beq_S, label));
+                    found2 = true;
                 }
+                else if (!found1 && instruction.opcode == OpCodes.Ret)
+                {
+                    workingList.Add(instruction);
+                    workingList.Add(code);
+                    workingList.Add(new CodeInstruction(OpCodes.Stloc_S, map.LocalIndex));
+                    found1 = true;
+                }
+                //Skip the 31 request group for the lister as we don't use it
+                else if (instruction.opcode == OpCodes.Ldc_I4_S) continue;
+                //Replace CurrentMap with our local variable
+                else if (instruction.Calls(method1))
+                {
+                    workingList.Add(new CodeInstruction(OpCodes.Ldloc_S, map.LocalIndex));
+                }
+                //Cache the count
+                else if (instruction.opcode == OpCodes.Stloc_1)
+                {
+                    workingList.Add(instruction);
+                    workingList.Add(new CodeInstruction(OpCodes.Ldloc_1));
+                    workingList.Add(new CodeInstruction(OpCodes.Callvirt, method2));
+                    workingList.Add(new CodeInstruction(OpCodes.Stloc_S, length.LocalIndex));
+                }
+                //Skip the Count getter pt I
+                else if (instruction.opcode == OpCodes.Ldloc_1)
+                {
+                    if (counter == 0) workingList.Add(instruction);
+                    counter++;
+                }
+                else if (instruction.Calls(method2))
+                {
+                    workingList.Add(new CodeInstruction(OpCodes.Ldloc_S, length.LocalIndex));
+                }
+                else workingList.Add(instruction);
             }
-            return false;
+
+            return workingList
+                .MethodReplacer(AccessTools.PropertyGetter(typeof(CameraDriver), nameof(CameraDriver.CurrentViewRect)),
+				AccessTools.Method(typeof(Patch_ThingOverlays_ThingOverlaysOnGUI), nameof(CurrentViewRect)))
+                
+                .MethodReplacer(AccessTools.Method(typeof(ListerThings), nameof(ListerThings.ThingsInGroup)),
+				AccessTools.Method(typeof(Patch_ThingOverlays_ThingOverlaysOnGUI), nameof(AlteredListByGroup)))
+                
+                .MethodReplacer(AccessTools.Method(typeof(FogGrid), nameof(FogGrid.IsFogged), new Type[] { typeof(IntVec3) }),
+				AccessTools.Method(typeof(Patch_ThingOverlays_ThingOverlaysOnGUI), nameof(IsFoggedFast)));
+        }
+
+        public static CellRect CurrentViewRect(CameraDriver cameraDriver)
+        {
+            return CameraDriver.lastViewRect;
+        }
+
+        public static bool IsFoggedFast(FogGrid fogGrid, IntVec3 position)
+        {
+            return fogGrid.fogGrid[position.z * fogGrid.map.info.sizeInt.x + position.x];
+        }
+
+        public static List<Thing> AlteredListByGroup(ListerThings listerThings)
+        {
+            return listerThings.listsByGroup[!zoomFilter || currentCameraZoom == CameraZoomRange.Closest ? 31 : 12] ?? new List<Thing>(); //ThingRequestGroup.HasGUIOverlay is 31, Pawn is 12
         }
     }
 }
